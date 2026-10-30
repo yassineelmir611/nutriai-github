@@ -1,0 +1,62 @@
+# Identifiants et configuration propre au poste
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.jks
+*.keystore
+key.properties
+kaggle.json
+credentials.json
+token.json
+local.properties
+
+# Dépendances, caches et résultats générés
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.dart_tool/
+.flutter-plugins*
+build/
+coverage/
+htmlcov/
+*.egg-info/
+.gradle/
+.cxx/
+node_modules/
+run_logs/
+*.log
+*log.txt
+.validation/
+
+# Données locales et sorties des entraînements
+datasets/
+train/data/
+train/models/
+train/plots/
+train/outputs/
+train/VF.ipynb
+_duplicates*/
+*.pth
+*.pt
+!application/modelEFF/effnetb2_food101 (3).pth
+*.zip
+*.apk
+*.aab
+*.exe
+*.lnk
+
+# Fichiers propres aux outils
+.idea/
+.vscode/
+.qodo/
+.sixth/
+*.iml
+.DS_Store
+Thumbs.db
+~$*

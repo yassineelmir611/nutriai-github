@@ -1,0 +1,63 @@
+name: Vérifications NutriAI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python scripts/check_publication.py
+
+  flutter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: application
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.9'
+          channel: stable
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter analyze
+      - run: flutter test
+      - name: Vérifier les URL indépendantes et le mode démo
+        run: flutter test test/api_configuration_test.dart --dart-define=TEST_CONFIGURATION=separate --dart-define=BASE_URL=http://ignored.example.test --dart-define=FOOD_API_URL=https://food.example.test --dart-define=CHAT_API_URL=https://chat.example.test --dart-define=USE_MOCK_API=true
+      - name: Vérifier BASE_URL
+        run: flutter test test/api_configuration_test.dart --dart-define=TEST_CONFIGURATION=emulator --dart-define=BASE_URL=http://10.0.2.2
+
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [food_server, chatbot_server]
+    defaults:
+      run:
+        working-directory: application/backend/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: |
+            application/backend/${{ matrix.service }}/requirements.txt
+            requirements-dev.txt
+      - name: Installer PyTorch CPU
+        if: matrix.service == 'food_server'
+        run: python -m pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m pip install -r requirements.txt -r ../../../requirements-dev.txt
+      - run: python -m pip check
+      - run: python -m pytest -q

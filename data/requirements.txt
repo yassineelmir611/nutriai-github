@@ -1,0 +1,3 @@
+# Outils optionnels de collecte et de détection des doublons visuels.
+icrawler==0.6.10
+Pillow==11.2.1

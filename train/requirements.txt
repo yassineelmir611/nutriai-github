@@ -1,0 +1,14 @@
+# Base pour explorer les notebooks. Le choix CUDA/CPU dépend de l'environnement.
+torch==2.5.1
+torchvision==0.20.1
+Pillow==11.2.1
+numpy
+matplotlib
+scikit-learn
+torchinfo
+tqdm
+gdown
+kaggle
+kagglehub
+google-api-python-client
+jupyterlab
